@@ -1,0 +1,13 @@
+services:
+  mysql:
+    image: mysql:9.7.1
+    ports:
+      - '3306:3306'
+    restart: always
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_NAME: shop_name
+      MYSQL_PASSWORD: shop_password
+      MYSQL_DATABASE: shop
