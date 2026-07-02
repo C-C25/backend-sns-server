@@ -8,6 +8,6 @@ services:
       - ./mysql-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_NAME: shop_name
+      MYSQL_USER: shop_name
       MYSQL_PASSWORD: shop_password
       MYSQL_DATABASE: shop

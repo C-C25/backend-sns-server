@@ -9,7 +9,10 @@ import {
   ENV_DB_NAME_KEY,
   ENV_DB_PASSWORD_KEY,
   ENV_DB_PORT_KEY,
-} from '../keys-values.const';
+} from './common/const/keys-values.const';
+import { UsersModule } from './users/users.module';
+import { CommonModule } from './common/common.module';
+import { UsersModel } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -24,9 +27,11 @@ import {
       username: process.env[ENV_DB_NAME_KEY],
       password: process.env[ENV_DB_PASSWORD_KEY],
       database: process.env[ENV_DB_DATABASE_KEY],
-      entities: [],
+      entities: [UsersModel],
       synchronize: true,
     }),
+    UsersModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
