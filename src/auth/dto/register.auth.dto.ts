@@ -10,10 +10,11 @@ export class RegisterUserDto {
   email!: string;
 
   @IsString()
-  @MaxLength(2)
-  @MinLength(20)
+  @MaxLength(20)
+  @MinLength(2)
   nickname!: string;
 
   @IsString()
+  @MinLength(4)
   password!: string;
 }
