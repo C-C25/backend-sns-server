@@ -1,7 +1,14 @@
 import { Column, Entity } from 'typeorm';
 import { BaseModel } from '../../common/entities/base.entity';
-import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Exclude } from 'class-transformer';
+import { RolesEnum } from '../const/roles.enum';
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -15,10 +22,18 @@ export class UsersModel extends BaseModel {
   @MinLength(2)
   nickname!: string;
 
+  @Exclude({
+    toPlainOnly: true,
+  })
   @Column({ select: false })
   @IsString()
   password!: string;
 
-  // TODO
-  // roles: Role.USER
+  @IsEnum(RolesEnum)
+  @Column({
+    type: 'enum',
+    enum: Object.values(RolesEnum),
+    default: RolesEnum.USER,
+  })
+  role!: RolesEnum;
 }
