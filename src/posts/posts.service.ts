@@ -1,4 +1,92 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PostsModel } from './entities/post.entity';
+import { Repository } from 'typeorm';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
-export class PostsService {}
+export class PostsService {
+  constructor(
+    @InjectRepository(PostsModel)
+    private readonly postsRepo: Repository<PostsModel>,
+  ) {}
+
+  // TODO 임시 전체 조회 pagination 적용 예정
+  async findAllPost() {
+    return await this.postsRepo.find();
+  }
+
+  async findByOnePost(id: number) {
+    const post = await this.postsRepo.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!post) {
+      throw new NotFoundException('존재하지 않는 게시글 입니다.');
+    }
+
+    return post;
+  }
+
+  // TODO 트랜잭션 적용 전
+  async createPost(authorId: number, dto: CreatePostDto) {
+    const post = this.postsRepo.create({
+      author: {
+        id: authorId,
+      },
+      ...dto,
+    });
+
+    const newPost = await this.postsRepo.save(post);
+
+    return newPost;
+  }
+
+  // TODO 트랜잭션 적용 전
+  async updatePost(postId: number, dto: UpdatePostDto) {
+    const post = await this.postsRepo.findOne({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) {
+      throw new NotFoundException(
+        '정책에의해 삭제되었거나 없는 게시글 입니다.',
+      );
+    }
+
+    if (dto.title !== undefined) {
+      post.title = dto.title;
+    }
+
+    if (dto.content !== undefined) {
+      post.content = dto.content;
+    }
+
+    const newPost = await this.postsRepo.save(post);
+
+    return newPost;
+  }
+
+  async removePost(id: number) {
+    const post = await this.postsRepo.findOne({
+      where: { id },
+    });
+
+    if (!post) {
+      throw new NotFoundException('존재하지 않는 게시글 입니다.');
+    }
+
+    await this.postsRepo.delete(id);
+
+    return post;
+  }
+}

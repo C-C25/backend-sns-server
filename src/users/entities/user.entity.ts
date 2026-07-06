@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseModel } from '../../common/entities/base.entity';
 import {
   IsEmail,
@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { RolesEnum } from '../const/roles.enum';
+import { PostsModel } from '../../posts/entities/post.entity';
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -36,4 +37,7 @@ export class UsersModel extends BaseModel {
     default: RolesEnum.USER,
   })
   role!: RolesEnum;
+
+  @OneToMany(() => PostsModel, (posts) => posts.author)
+  posts!: PostsModel[];
 }
