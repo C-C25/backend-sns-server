@@ -2,17 +2,15 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { ENV_JWT_REFRESH_SECRET_KEY } from '../common/const/keys-values.const';
 import { UsersModule } from '../users/users.module';
+import { JwtAccessStrategy } from './strategy/jwt-strategy-access.auth';
+import { JwtRefreshStrategy } from './strategy/jwt-strategy-refresh.auth';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [
-    JwtModule.register({
-      secret: process.env[ENV_JWT_REFRESH_SECRET_KEY],
-    }),
-    UsersModule,
-  ],
+  imports: [PassportModule, JwtModule.register({}), UsersModule],
+  exports: [],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtAccessStrategy, JwtRefreshStrategy],
 })
 export class AuthModule {}
