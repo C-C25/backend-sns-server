@@ -40,7 +40,7 @@ export class PostsController {
   @Patch(':id')
   @UseGuards(JwtAccessGuard)
   patchPost(
-    @Param('id') postId: number,
+    @Param('id', ParseIntPipe) postId: number,
     @User('sub') authorId: number,
     @Body() dto: UpdatePostDto,
   ) {
