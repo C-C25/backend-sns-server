@@ -1,24 +1,31 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostsModel } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PaginatePostDto } from './dto/post-paginate.dto';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(PostsModel)
     private readonly postsRepo: Repository<PostsModel>,
+    private readonly commonService: CommonService,
   ) {}
 
-  // TODO 임시 전체 조회 pagination 적용 예정
-  async findAllPost() {
-    return await this.postsRepo.find();
+  async paginate(dto: PaginatePostDto) {
+    return this.commonService.paginate(dto, this.postsRepo, {}, 'posts');
+  }
+
+  async generatePosts(userId: number) {
+    for (let i = 0; i < 100; i++) {
+      await this.createPost(userId, {
+        title: `임의로 생성된 포스트 제목 ${i}`,
+        content: `임의로 생성된 포스트 내용 ${i}`,
+      });
+    }
   }
 
   async findByOnePost(id: number) {

@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
@@ -14,14 +15,16 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { JwtAccessGuard } from '../auth/guard/jwt-access.auth.guard';
 import { User } from '../users/decorator/user.decorator';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { UsersModel } from '../users/entities/user.entity';
+import { PaginatePostDto } from './dto/post-paginate.dto';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  getPosts() {
-    return this.postsService.findAllPost();
+  getPosts(@Query() query: PaginatePostDto) {
+    return this.postsService.paginate(query);
   }
 
   @Get(':id')
@@ -34,6 +37,15 @@ export class PostsController {
   @UseGuards(JwtAccessGuard)
   postPosts(@User('sub') authorId: number, @Body() dto: CreatePostDto) {
     return this.postsService.createPost(authorId, dto);
+  }
+
+  // POST /posts/random
+  @Post('random')
+  @UseGuards(JwtAccessGuard)
+  async postPostsRandom(@User('sub') userId: number) {
+    await this.postsService.generatePosts(userId);
+
+    return true;
   }
 
   // TODO 예비군 다녀와서 트랜잭션 적용

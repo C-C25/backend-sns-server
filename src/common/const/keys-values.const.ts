@@ -1,8 +1,14 @@
+// JWT
 export const ENV_JWT_SECRET_KEY = 'JWT_SECRET';
 export const ENV_HASH_ROUNDS_KEY = 'HASH_ROUNDS';
 export const ENV_JWT_ACCESS_SECRET_KEY = 'JWT_ACCESS_SECRET';
 export const ENV_JWT_REFRESH_SECRET_KEY = 'JWT_REFRESH_SECRET';
 
+// URL
+export const ENV_LOCAL_PROTOCOL_KEY = 'LOCAL_PROTOCOL';
+export const ENV_LOCAL_HOST_KEY = 'LOCAL_HOST';
+
+// DB
 export const ENV_DB_HOST_KEY = 'DB_HOST';
 export const ENV_DB_PORT_KEY = 'DB_PORT';
 export const ENV_DB_NAME_KEY = 'DB_NAME';
