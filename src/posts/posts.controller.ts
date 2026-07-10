@@ -9,13 +9,17 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import type { QueryRunner as QR } from 'typeorm';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { JwtAccessGuard } from '../auth/guard/jwt-access.auth.guard';
 import { User } from '../users/decorator/user.decorator';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginatePostDto } from './dto/post-paginate.dto';
+import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
+import { QueryRunner } from '../common/decorator/query-runner.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -31,11 +35,16 @@ export class PostsController {
     return this.postsService.findByOnePost(id);
   }
 
-  // TODO 예비군 다녀와서 트랜잭션 적용
   @Post()
+  @UseInterceptors(TransactionInterceptor)
   @UseGuards(JwtAccessGuard)
-  postPosts(@User('sub') authorId: number, @Body() dto: CreatePostDto) {
-    return this.postsService.createPost(authorId, dto);
+  async postPosts(
+    @User('sub') authorId: number,
+    @Body() dto: CreatePostDto,
+    @QueryRunner() qr: QR,
+  ) {
+    const post = await this.postsService.createPost(authorId, dto, qr);
+    return this.postsService.findByOnePost(post.id, qr);
   }
 
   // @Post('random')
@@ -46,7 +55,6 @@ export class PostsController {
   //   return true;
   // }
 
-  // TODO 예비군 다녀와서 트랜잭션 적용
   @Patch(':id')
   @UseGuards(JwtAccessGuard)
   patchPost(

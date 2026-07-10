@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostsModel } from './entities/post.entity';
-import { Repository } from 'typeorm';
+import { Repository, QueryRunner } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginatePostDto } from './dto/post-paginate.dto';
@@ -28,8 +28,10 @@ export class PostsService {
   //   }
   // }
 
-  async findByOnePost(id: number) {
-    const post = await this.postsRepo.findOne({
+  async findByOnePost(id: number, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+
+    const post = await repository.findOne({
       where: {
         id,
       },
@@ -42,23 +44,32 @@ export class PostsService {
     return post;
   }
 
-  // TODO 트랜잭션 적용 전
-  async createPost(authorId: number, dto: CreatePostDto) {
-    const post = this.postsRepo.create({
+  getRepository(qr?: QueryRunner) {
+    return qr
+      ? qr.manager.getRepository<PostsModel>(PostsModel)
+      : this.postsRepo;
+  }
+
+  async createPost(authorId: number, dto: CreatePostDto, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+
+    const post = repository.create({
       author: {
         id: authorId,
       },
       ...dto,
     });
 
-    const newPost = await this.postsRepo.save(post);
+    const newPost = await repository.save(post);
 
     return newPost;
   }
 
-  // TODO 트랜잭션 적용 전
-  async updatePost(postId: number, dto: UpdatePostDto) {
+  async updatePost(postId: number, dto: UpdatePostDto, qr?: QueryRunner) {
     const post = await this.postsRepo.findOne({
+      relations: {
+        author: true,
+      },
       where: {
         id: postId,
       },
