@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,10 +24,33 @@ export class UsersService {
         id: true,
         password: true,
         email: true,
+        role: true,
         nickname: true,
         createdAt: true,
       },
     });
+
+    return user;
+  }
+
+  async findByUserId(id: number) {
+    const user = await this.usersRepo.findOne({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        nickname: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('인증할 수 없는 사용자입니다.');
+    }
+
     return user;
   }
 

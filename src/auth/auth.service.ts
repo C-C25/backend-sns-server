@@ -11,7 +11,6 @@ import {
 import * as bcrypt from 'bcrypt';
 import { RegisterUserDto } from './dto/register.auth.dto';
 import { LoginUserDto } from './dto/login.auth.dto';
-import { stringify } from 'querystring';
 
 @Injectable()
 export class AuthService {

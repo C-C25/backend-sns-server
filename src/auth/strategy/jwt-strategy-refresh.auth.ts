@@ -18,7 +18,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
   }
   async validate(payload: JwtPayload) {
     if (payload.token !== 'refresh') {
-      throw new UnauthorizedException('refresh 토큰이아닙니다.');
+      throw new UnauthorizedException('토큰 재발급이 불가능합니다.'); // 어떤 토큰이 잘못 되었는지 알리지 않는 의도.
     }
 
     return {

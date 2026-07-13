@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { BaseModel } from '../../common/entities/base.entity';
 import {
   IsEmail,
@@ -10,6 +10,7 @@ import {
 import { Exclude } from 'class-transformer';
 import { RolesEnum } from '../const/roles.enum';
 import { PostsModel } from '../../posts/entities/post.entity';
+import { ChatsModel } from '../../chats/entities/chats.entity';
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -40,4 +41,8 @@ export class UsersModel extends BaseModel {
 
   @OneToMany(() => PostsModel, (posts) => posts.author)
   posts!: PostsModel[];
+
+  @ManyToMany(() => ChatsModel, (chats) => chats.users)
+  @JoinTable()
+  chats!: ChatsModel[];
 }

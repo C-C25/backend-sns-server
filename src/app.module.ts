@@ -17,6 +17,8 @@ import { AuthModule } from './auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PostsModule } from './posts/posts.module';
 import { PostsModel } from './posts/entities/post.entity';
+import { ChatsModule } from './chats/chats.module';
+import { ChatsModel } from './chats/entities/chats.entity';
 
 @Module({
   imports: [
@@ -31,13 +33,14 @@ import { PostsModel } from './posts/entities/post.entity';
       username: process.env[ENV_DB_NAME_KEY],
       password: process.env[ENV_DB_PASSWORD_KEY],
       database: process.env[ENV_DB_DATABASE_KEY],
-      entities: [UsersModel, PostsModel],
+      entities: [UsersModel, PostsModel, ChatsModel],
       synchronize: true,
     }),
     UsersModule,
     CommonModule,
     AuthModule,
     PostsModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [
