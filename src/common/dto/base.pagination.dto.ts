@@ -1,6 +1,6 @@
 import { IsIn, IsNumber, IsOptional } from 'class-validator';
 
-export class PaginateDto {
+export class BasePaginateDto {
   @IsNumber()
   @IsOptional()
   page?: number;

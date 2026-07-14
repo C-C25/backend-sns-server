@@ -11,6 +11,7 @@ import { Exclude } from 'class-transformer';
 import { RolesEnum } from '../const/roles.enum';
 import { PostsModel } from '../../posts/entities/post.entity';
 import { ChatsModel } from '../../chats/entities/chats.entity';
+import { MessagesModel } from '../../chats/messages/entities/messages.entity';
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -45,4 +46,7 @@ export class UsersModel extends BaseModel {
   @ManyToMany(() => ChatsModel, (chats) => chats.users)
   @JoinTable()
   chats!: ChatsModel[];
+
+  @OneToMany(() => MessagesModel, (message) => message.author)
+  messages!: MessagesModel[];
 }

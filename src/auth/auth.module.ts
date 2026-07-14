@@ -6,10 +6,11 @@ import { UsersModule } from '../users/users.module';
 import { JwtAccessStrategy } from './strategy/jwt-strategy-access.auth';
 import { JwtRefreshStrategy } from './strategy/jwt-strategy-refresh.auth';
 import { PassportModule } from '@nestjs/passport';
+import { ChatsModule } from '../chats/chats.module';
 
 @Module({
   imports: [PassportModule, JwtModule.register({}), UsersModule],
-  exports: [],
+  exports: [AuthService],
   controllers: [AuthController],
   providers: [AuthService, JwtAccessStrategy, JwtRefreshStrategy],
 })

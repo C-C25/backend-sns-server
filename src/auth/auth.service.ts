@@ -20,6 +20,31 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  extractTokenFromHeader(header: string, isBearer: boolean) {
+    const decoded = header.split(' ');
+
+    const prefix = isBearer ? 'Bearer' : 'Basic';
+
+    if (decoded.length !== 2 || decoded[0] !== prefix) {
+      throw new UnauthorizedException('토큰 유형이 잘못됐습니다.');
+    }
+
+    const token = decoded[1];
+    return token;
+  }
+
+  verifyAccessToken(token: string) {
+    try {
+      return this.jwtService.verify(token, {
+        secret: this.configService.get<string>(ENV_JWT_ACCESS_SECRET_KEY),
+      });
+    } catch (e) {
+      throw new UnauthorizedException(
+        '토큰이 유효 하지 않거나 만료되었습니다.',
+      );
+    }
+  }
+
   async accessSignToken(user: Pick<UsersModel, 'email' | 'id' | 'role'>) {
     const accessPayload = {
       sub: user.id,

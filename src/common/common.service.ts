@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PaginateDto } from './dto/base.pagination.dto';
+import { BasePaginateDto } from './dto/base.pagination.dto';
 import {
   FindManyOptions,
   FindOptionsOrder,
@@ -19,7 +19,7 @@ export class CommonService {
   constructor(private readonly configService: ConfigService) {}
 
   async paginate<T extends BaseModel>(
-    dto: PaginateDto,
+    dto: BasePaginateDto,
     repository: Repository<T>,
     overrideFindOptions: FindManyOptions<T> = {},
     path: string,
@@ -31,7 +31,7 @@ export class CommonService {
     }
   }
   private async pagePagination<T extends BaseModel>(
-    dto: PaginateDto,
+    dto: BasePaginateDto,
     repository: Repository<T>,
     overrideFindOptions: FindManyOptions<T> = {},
   ) {
@@ -65,7 +65,7 @@ export class CommonService {
   }
 
   private async cursorPaginate<T extends BaseModel>(
-    dto: PaginateDto,
+    dto: BasePaginateDto,
     repository: Repository<T>,
     overrideFindOptions: FindManyOptions<T> = {},
     path: string,
@@ -125,7 +125,7 @@ export class CommonService {
   }
 
   private parseOrderFilters<T extends BaseModel>(
-    dto: PaginateDto,
+    dto: BasePaginateDto,
   ): FindOptionsOrder<T> {
     const order: FindOptionsOrder<T> = {};
 
@@ -140,7 +140,7 @@ export class CommonService {
   }
 
   private parseWhereFilters<T extends BaseModel>(
-    dto: PaginateDto,
+    dto: BasePaginateDto,
   ): FindOptionsWhere<T> {
     const where: FindOptionsWhere<T> = {};
 
